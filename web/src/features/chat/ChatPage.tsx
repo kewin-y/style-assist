@@ -18,7 +18,7 @@ import { Navbar } from "@/components/navbar";
 
 export default function ChatPage() {
   return (
-    <div>
+    <div className="flex flex-col items-center gap-4 p-4">
       <Navbar />
       <h1>What's your idea?</h1>
       <FileUploadBox />
