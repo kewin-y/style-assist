@@ -14,10 +14,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Navbar } from "@/components/navbar";
 
 export default function ChatPage() {
   return (
     <div>
+      <Navbar />
       <h1>What's your idea?</h1>
       <FileUploadBox />
       <p>or</p>
