@@ -1,19 +1,12 @@
-"""from fastapi import APIRouter, Uploadfile
-from app.services.supabase import supabase
+from typing import Annotated
 
-router = APIRouter()
-
-@router.post("/upload")
-async def upload_clothing(file: Uploadfile):
-    pass"""
-
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from pydantic import BaseModel
 from pydantic_ai import ImageUrl
 
 from app.agents.clothing_analyzer import agent as clothing_analyzer_agent
 from app.dependencies.auth import CurrentUser
-
+from app.schemas.clothing import ClothingCategory, ClothingColor, ClothingFormality
 from app.services.supabase import supabase
 
 
@@ -22,6 +15,35 @@ router = APIRouter(prefix="/clothes", tags=["clothes"])
 
 class ImageUrlRequest(BaseModel):
     url: str
+
+class ClothingResponse(BaseModel):
+    id: int
+    name: str
+    description: str | None
+    category: ClothingCategory
+    formality: ClothingFormality
+    color: ClothingColor
+    image_url: str
+
+
+@router.get("/")
+async def get_clothes(
+    user: CurrentUser,
+    categories: Annotated[list[ClothingCategory] | None, Query()] = None,
+    colors: Annotated[list[ClothingColor] | None, Query()] = None,
+    formalities: Annotated[list[ClothingFormality] | None, Query()] = None,
+):
+    query = supabase.table("clothes").select("*").eq("user_id", user["id"])
+
+    if categories:
+        query = query.in_("category", [c.value for c in categories])
+    if colors:
+        query = query.in_("color", [c.value for c in colors])
+    if formalities:
+        query = query.in_("formality", [f.value for f in formalities])
+
+    response = query.execute()
+    return response.data
 
 
 @router.post("/upload")
@@ -37,27 +59,26 @@ async def upload_clothing(request: ImageUrlRequest, user: CurrentUser):
         clothing_item.formality.value,
     ]
 
-
     if clothing_item.description is not None:
         search_text_arr.append(str(clothing_item.description))
 
     search_text = " ".join(search_text_arr)
 
-    response = supabase.table("clothes").insert(
-        {
-            "user_id": user["id"],
-            "name": clothing_item.name,
-            "description": clothing_item.description,
-            "category": clothing_item.category,
-            "formality": clothing_item.formality,
-            "color": clothing_item.color,
-            "search_text": search_text,
-            "image_url": request.url
-
-        }
-    ).execute()
+    response = (
+        supabase.table("clothes")
+        .insert(
+            {
+                "user_id": user["id"],
+                "name": clothing_item.name,
+                "description": clothing_item.description,
+                "category": clothing_item.category,
+                "formality": clothing_item.formality,
+                "color": clothing_item.color,
+                "search_text": search_text,
+                "image_url": request.url,
+            }
+        )
+        .execute()
+    )
 
     return response
-# return response
-
-
