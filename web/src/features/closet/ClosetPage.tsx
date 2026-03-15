@@ -1,26 +1,44 @@
 import { FilterDropdown } from "@/components/filter"
 import * as React from "react"
+import { useClothes } from "@/hooks/useClothes"
+import type { ClothingFilters } from "@/types/clothing"
 
-// For testing
-const MOCK_ITEMS = [
-  { id: 1, name: "Red T-Shirt", type: "INNER_TOP", colour: "RED", formality: "CASUAL" },
-  { id: 2, name: "Blue Shorts", type: "BOTTOM", colour: "BLUE", formality: "ATHLETIC" },
-  { id: 3, name: "Black Dress", type: "INNER_TOP", colour: "BLACK", formality: "FORMAL" },
-  { id: 4, name: "Summer Shoes", type: "SHOES", colour: "YELLOW", formality: "CASUAL" },
-  { id: 5, name: "Winter Jacket", type: "OUTER_TOP", colour: "GREEN", formality: "BUSINESS_CASUAL" },
-]
+const EMPTY_FILTERS: ClothingFilters = {
+  categories: [],
+  colors: [],
+  formalities: [],
+}
 
 export default function ClosetPage() {
-  const [items, setItems] = React.useState(MOCK_ITEMS)
+  const [filters, setFilters] = React.useState<ClothingFilters>(EMPTY_FILTERS)
+  const { data: items = [], isLoading, error } = useClothes(filters)
 
   const deleteItem = (id: number) => {
-    setItems(prev => prev.filter(item => item.id !== id))
+    console.log("Delete item:", id)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl text-red-500">Error loading closet items: {JSON.stringify(error)} </div>
+      </div>
+    )
   }
 
   return (
     <div>
       <h1 className="text-6xl font-bold mb-6 ml-5 mt-15">Welcome to your digital closet!</h1>
       <FilterDropdown
+        filters={filters}
+        onFiltersChange={setFilters}
         items={items}
         deleteItem={deleteItem}
       />

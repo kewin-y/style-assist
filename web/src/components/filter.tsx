@@ -13,83 +13,68 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { CardImage } from "@/components/clothing_card"
-
-const CLOTHING_TYPES = [
-  'INNER_TOP', 
-  'OUTER_TOP', 
-  'BOTTOM', 
-  'SHOES'
-]
-
-const CLOTHING_FORMALITY = [
-  'CASUAL', 
-  'BUSINESS_CASUAL', 
-  'FORMAL', 
-  'ATHLETIC'
-]
-
-const CLOTHING_COLOUR = [
-  'RED',
-  'ORANGE',
-  'YELLOW',
-  'GREEN',
-  'BLUE',
-  'PURPLE',
-  'BLACK',
-  'WHITE',
-  'BROWN',
-  'GREY',
-  'PINK',
-  'MULTI'
-]
+import {
+  CLOTHING_CATEGORIES,
+  CLOTHING_COLORS,
+  CLOTHING_FORMALITIES,
+  type ClothingCategory,
+  type ClothingColor,
+  type ClothingFormality,
+  type ClothingFilters,
+} from "@/types/clothing"
 
 type FilterDropdownProps = {
-  items: { id: number; name: string; type: string; colour: string; formality: string }[]
+  filters: ClothingFilters
+  onFiltersChange: (filters: ClothingFilters) => void
+  items: { id: number; name: string; category: ClothingCategory; color: ClothingColor; formality: ClothingFormality; image_url: string; description: string | null }[]
   deleteItem: (id: number) => void
 }
 
-export function FilterDropdown({ items, deleteItem }: FilterDropdownProps) {
-  // Dynamic state for all types of clothing
-  const [selectedTypes, setSelectedTypes] = React.useState(
-    CLOTHING_TYPES.reduce((acc, type) => {
-      acc[type] = false
+export function FilterDropdown({ filters, onFiltersChange, items, deleteItem }: FilterDropdownProps) {
+  const selectedTypes = CLOTHING_CATEGORIES.reduce(
+    (acc, type) => {
+      acc[type] = filters.categories.includes(type)
       return acc
-    }, {} as Record<string, boolean>)
+    },
+    {} as Record<ClothingCategory, boolean>
   )
 
-  // Dynamic state for all colours
-  const [selectedColours, setSelectedColours] = React.useState(
-    CLOTHING_COLOUR.reduce((acc, colour) => {
-      acc[colour] = false
+  const selectedColors = CLOTHING_COLORS.reduce(
+    (acc, color) => {
+      acc[color] = filters.colors.includes(color)
       return acc
-    }, {} as Record<string, boolean>)
+    },
+    {} as Record<ClothingColor, boolean>
   )
 
-  // Dynamic state for all formalities
-  const [selectedFormalities, setSelectedFormalities] = React.useState(
-    CLOTHING_FORMALITY.reduce((acc, formality) => {
-      acc[formality] = false
+  const selectedFormalities = CLOTHING_FORMALITIES.reduce(
+    (acc, formality) => {
+      acc[formality] = filters.formalities.includes(formality)
       return acc
-    }, {} as Record<string, boolean>)
+    },
+    {} as Record<ClothingFormality, boolean>
   )
 
-  // Filter items based on selection
-  const filteredItems = items.filter((item) => {
+  const handleTypeChange = (type: ClothingCategory, checked: boolean) => {
+    const newCategories = checked
+      ? [...filters.categories, type]
+      : filters.categories.filter((c) => c !== type)
+    onFiltersChange({ ...filters, categories: newCategories })
+  }
 
-    /* Filter by clothing type */
-    const activeTypes = Object.keys(selectedTypes).filter((key) => selectedTypes[key])
-    const typeMatch = activeTypes.length === 0 || activeTypes.includes(item.type)
+  const handleColorChange = (color: ClothingColor, checked: boolean) => {
+    const newColors = checked
+      ? [...filters.colors, color]
+      : filters.colors.filter((c) => c !== color)
+    onFiltersChange({ ...filters, colors: newColors })
+  }
 
-    /* Filter by colour */
-    const activeColours = Object.keys(selectedColours).filter((key) => selectedColours[key])
-    const colourMatch = activeColours.length === 0 || activeColours.includes(item.colour)
-
-    /* Filter by formality */
-    const activeFormalities = Object.keys(selectedFormalities).filter((key) => selectedFormalities[key])
-    const formalitiesMatch = activeFormalities.length === 0 || activeFormalities.includes(item.formality)
-
-    return typeMatch && formalitiesMatch && colourMatch
-  })
+  const handleFormalityChange = (formality: ClothingFormality, checked: boolean) => {
+    const newFormalities = checked
+      ? [...filters.formalities, formality]
+      : filters.formalities.filter((f) => f !== formality)
+    onFiltersChange({ ...filters, formalities: newFormalities })
+  }
 
   return (
     <div>
@@ -104,14 +89,12 @@ export function FilterDropdown({ items, deleteItem }: FilterDropdownProps) {
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Clothing Type</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {CLOTHING_TYPES.map((type) => (
+              {CLOTHING_CATEGORIES.map((type) => (
                 <DropdownMenuCheckboxItem
                   key={type}
                   checked={selectedTypes[type]}
-                  onCheckedChange={(value) =>
-                    setSelectedTypes({ ...selectedTypes, [type]: value })
-                  }
-                  onSelect={(e) => e.preventDefault()} // keep dropdown open
+                  onCheckedChange={(value) => handleTypeChange(type, value)}
+                  onSelect={(e) => e.preventDefault()}
                 >
                   {type}
                 </DropdownMenuCheckboxItem>
@@ -119,20 +102,18 @@ export function FilterDropdown({ items, deleteItem }: FilterDropdownProps) {
             </DropdownMenuSubContent>
           </DropdownMenuSub>
 
-          {/* Colour Submenu */}
+          {/* Color Submenu */}
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Colour</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>Color</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {CLOTHING_COLOUR.map((colour) => (
+              {CLOTHING_COLORS.map((color) => (
                 <DropdownMenuCheckboxItem
-                  key={colour}
-                  checked={selectedColours[colour]}
-                  onCheckedChange={(value) =>
-                    setSelectedColours({ ...selectedColours, [colour]: value })
-                  }
-                  onSelect={(e) => e.preventDefault()} // keep dropdown open
+                  key={color}
+                  checked={selectedColors[color]}
+                  onCheckedChange={(value) => handleColorChange(color, value)}
+                  onSelect={(e) => e.preventDefault()}
                 >
-                  {colour}
+                  {color}
                 </DropdownMenuCheckboxItem>
               ))}
             </DropdownMenuSubContent>
@@ -142,14 +123,12 @@ export function FilterDropdown({ items, deleteItem }: FilterDropdownProps) {
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Formality</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {CLOTHING_FORMALITY.map((formality) => (
+              {CLOTHING_FORMALITIES.map((formality) => (
                 <DropdownMenuCheckboxItem
                   key={formality}
                   checked={selectedFormalities[formality]}
-                  onCheckedChange={(value) =>
-                    setSelectedFormalities({ ...selectedFormalities, [formality]: value })
-                  }
-                  onSelect={(e) => e.preventDefault()} // keep dropdown open
+                  onCheckedChange={(value) => handleFormalityChange(formality, value)}
+                  onSelect={(e) => e.preventDefault()}
                 >
                   {formality}
                 </DropdownMenuCheckboxItem>
@@ -161,11 +140,11 @@ export function FilterDropdown({ items, deleteItem }: FilterDropdownProps) {
       </DropdownMenu>
       </div>
 
-      {/* Display filtered items */}
+      {/* Display items */}
       <div className="grid grid-cols-3 gap-6 mt-6">
-        {filteredItems.map((item) => (
-          <CardImage 
-            key={item.id} 
+        {items.map((item) => (
+          <CardImage
+            key={item.id}
             item={item}
             deleteItem={deleteItem}
           />
