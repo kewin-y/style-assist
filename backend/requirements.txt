@@ -13,4 +13,4 @@ replicate
 rembg[cpu]
 rembg[gpu]
 
-httpx
+aiofiles
