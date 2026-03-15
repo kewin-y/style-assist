@@ -3,6 +3,7 @@ from pydantic_ai import ImageUrl
 from app.dependencies.auth import CurrentUser
 from app.schemas.outfits import GenerateOutfitRequest, OutfitError
 from app.agents.stylist import agent as stylist_agent
+from app.services.supabase import supabase
 
 router = APIRouter(prefix="/outfits", tags=["outfits"])
 
@@ -31,10 +32,19 @@ async def generate_outfit(request: GenerateOutfitRequest, user: CurrentUser):
                 "message": result.output.refusal_reason
             }
 
-        return {
-            "status": "success",
-            "outfit": result.output,
-        }
+
+        outfit = result.output
+
+        db_response  = supabase.table("outfits").insert({
+            "user_id": user["id"],
+            "inner_tops": outfit.inner_tops,
+            "outer_tops": outfit.outer_tops,
+            "bottoms": outfit.bottoms,
+            "shoes": outfit.shoes,
+            "reasoning": outfit.reasoning
+        }).execute()
+
+        return db_response.data
 
     except Exception as e:
         print(f"Generation Error: {str(e)}")
