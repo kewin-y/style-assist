@@ -1,6 +1,4 @@
 "use client"
-
-import * as React from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -26,11 +24,24 @@ import {
 type FilterDropdownProps = {
   filters: ClothingFilters
   onFiltersChange: (filters: ClothingFilters) => void
-  items: { id: number; name: string; category: ClothingCategory; color: ClothingColor; formality: ClothingFormality; image_url: string; description: string | null }[]
+  items: {
+    id: number
+    name: string
+    category: ClothingCategory
+    color: ClothingColor
+    formality: ClothingFormality
+    image_url: string
+    description: string | null
+  }[]
   deleteItem: (id: number) => void
 }
 
-export function FilterDropdown({ filters, onFiltersChange, items, deleteItem }: FilterDropdownProps) {
+export function FilterDropdown({
+  filters,
+  onFiltersChange,
+  items,
+  deleteItem,
+}: FilterDropdownProps) {
   const selectedTypes = CLOTHING_CATEGORIES.reduce(
     (acc, type) => {
       acc[type] = filters.categories.includes(type)
@@ -69,7 +80,10 @@ export function FilterDropdown({ filters, onFiltersChange, items, deleteItem }: 
     onFiltersChange({ ...filters, colors: newColors })
   }
 
-  const handleFormalityChange = (formality: ClothingFormality, checked: boolean) => {
+  const handleFormalityChange = (
+    formality: ClothingFormality,
+    checked: boolean
+  ) => {
     const newFormalities = checked
       ? [...filters.formalities, formality]
       : filters.formalities.filter((f) => f !== formality)
@@ -78,79 +92,75 @@ export function FilterDropdown({ filters, onFiltersChange, items, deleteItem }: 
 
   return (
     <div>
-      <div className="flex justify-start ml-9.5">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">Filter</Button>
-        </DropdownMenuTrigger>
+      <div className="ml-9.5 flex justify-start">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Filter</Button>
+          </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="w-48">
-          {/* Clothing Type Submenu */}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Clothing Type</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              {CLOTHING_CATEGORIES.map((type) => (
-                <DropdownMenuCheckboxItem
-                  key={type}
-                  checked={selectedTypes[type]}
-                  onCheckedChange={(value) => handleTypeChange(type, value)}
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  {type}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+          <DropdownMenuContent className="w-48">
+            {/* Clothing Type Submenu */}
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Clothing Type</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {CLOTHING_CATEGORIES.map((type) => (
+                  <DropdownMenuCheckboxItem
+                    key={type}
+                    checked={selectedTypes[type]}
+                    onCheckedChange={(value) => handleTypeChange(type, value)}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    {type}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
 
-          {/* Color Submenu */}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Color</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              {CLOTHING_COLORS.map((color) => (
-                <DropdownMenuCheckboxItem
-                  key={color}
-                  checked={selectedColors[color]}
-                  onCheckedChange={(value) => handleColorChange(color, value)}
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  {color}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+            {/* Color Submenu */}
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Color</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {CLOTHING_COLORS.map((color) => (
+                  <DropdownMenuCheckboxItem
+                    key={color}
+                    checked={selectedColors[color]}
+                    onCheckedChange={(value) => handleColorChange(color, value)}
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    {color}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
 
-          {/* Formality Submenu */}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Formality</DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              {CLOTHING_FORMALITIES.map((formality) => (
-                <DropdownMenuCheckboxItem
-                  key={formality}
-                  checked={selectedFormalities[formality]}
-                  onCheckedChange={(value) => handleFormalityChange(formality, value)}
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  {formality}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-
-        </DropdownMenuContent>
-      </DropdownMenu>
+            {/* Formality Submenu */}
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Formality</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {CLOTHING_FORMALITIES.map((formality) => (
+                  <DropdownMenuCheckboxItem
+                    key={formality}
+                    checked={selectedFormalities[formality]}
+                    onCheckedChange={(value) =>
+                      handleFormalityChange(formality, value)
+                    }
+                    onSelect={(e) => e.preventDefault()}
+                  >
+                    {formality}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Display items */}
-      <div className="grid grid-cols-3 gap-6 mt-6">
+      <div className="mt-6 grid grid-cols-3 gap-6">
         {items.map((item) => (
-          <CardImage
-            key={item.id}
-            item={item}
-            deleteItem={deleteItem}
-          />
+          <CardImage key={item.id} item={item} deleteItem={deleteItem} />
         ))}
       </div>
     </div>
   )
 }
-    

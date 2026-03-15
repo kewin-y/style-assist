@@ -6,21 +6,21 @@ import {
 } from "@/components/ui/card"
 
 import { AlertDialogDestructive } from "@/components/deleteConfirm"
-
-type Item = {
-  id: number
-  name: string
-  type: string
-  colour: string
-  formality: string
-}
+import type { SavedOutfit } from "@/types/outfit"
 
 type OutfitImageProps = {
-  item: Item // single item, not an array
+  item: SavedOutfit
   deleteItem: (id: number) => void
 }
 
 export function OutfitCardImage({ item, deleteItem }: OutfitImageProps) {
+  const pieces = [
+    ...item.outer_tops,
+    ...item.inner_tops,
+    ...item.bottoms,
+    ...item.shoes,
+  ]
+
   return (
     <Card className="relative mx-auto w-full max-w-sm pt-0">
       <div className="absolute inset-0 z-30 aspect-video bg-black/35" />
@@ -30,15 +30,13 @@ export function OutfitCardImage({ item, deleteItem }: OutfitImageProps) {
         className="relative z-20 aspect-video w-full object-cover brightness-60 grayscale dark:brightness-40"
       />
       <CardHeader>
-        <CardTitle>{item.name}</CardTitle>
-        <CardDescription>
-          This is the description -- to be continued.
-        </CardDescription>
+        <CardTitle>{item.title}</CardTitle>
+        <CardDescription>{item.reasoning || pieces.join(", ")}</CardDescription>
       </CardHeader>
       {/* Delete button */}
-        <div className="absolute bottom-2 right-2 z-50">
-          <AlertDialogDestructive onConfirm={() => deleteItem(item.id)} />
-        </div>
+      <div className="absolute right-2 bottom-2 z-50">
+        <AlertDialogDestructive onConfirm={() => deleteItem(item.id)} />
+      </div>
     </Card>
   )
 }

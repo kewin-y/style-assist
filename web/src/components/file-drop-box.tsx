@@ -1,9 +1,9 @@
-"use client";
+import { Upload, X } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import * as React from "react"
+import { toast } from "sonner"
 
-import { HugeiconsIcon } from '@hugeicons/react'
-import { Upload, X } from "@hugeicons/core-free-icons";
-import * as React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   FileUpload,
   FileUploadDropzone,
@@ -13,62 +13,62 @@ import {
   FileUploadItemPreview,
   FileUploadList,
   FileUploadTrigger,
-} from "@/components/ui/file-upload";
+} from "@/components/ui/file-upload"
+import { cn } from "@/lib/utils"
 
-// TODO: Turn image file into supabase URL
-// Insert into HARDCODED_USER_ID/RANDOM_UUID.extension
-// hit the api (localhost:8000/outfits/generate) with that
-// Might also want to refactor this to expose props which ChatPage can access...
-export function FileUploadBox() {
-  const [files, setFiles] = React.useState<File[]>([]);
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024
 
-  const onFileValidate = React.useCallback(
-    (file: File): string | null => {
-      // Validate max files
-      if (files.length >= 1) {
-        return "You can only upload up to 1 files";
-      }
+type FileUploadBoxProps = {
+  value: File[]
+  onValueChange: (files: File[]) => void
+  disabled?: boolean
+  className?: string
+}
 
-      // Validate file type (only images)
-      if (!file.type.startsWith("image/")) {
-        return "Only image files are allowed";
-      }
+export function FileUploadBox({
+  value,
+  onValueChange,
+  disabled = false,
+  className,
+}: FileUploadBoxProps) {
+  const onFileValidate = React.useCallback((file: File): string | null => {
+    if (!file.type.startsWith("image/")) {
+      return "Only image files are allowed"
+    }
 
-      // Validate file size (max 2MB)
-      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
-      if (file.size > MAX_SIZE) {
-        return `File size must be less than ${MAX_SIZE / (1024 * 1024)}MB`;
-      }
+    if (file.size > MAX_IMAGE_SIZE) {
+      return `File size must be less than ${MAX_IMAGE_SIZE / (1024 * 1024)}MB`
+    }
 
-      return null;
-    },
-    [files],
-  );
+    return null
+  }, [])
 
-  const onFileReject = React.useCallback((file: File, message: string) => {
-
-  }, []);
+  const onFileReject = React.useCallback((_file: File, message: string) => {
+    toast.error(message)
+  }, [])
 
   return (
     <FileUpload
-      value={files}
-      onValueChange={setFiles}
+      value={value}
+      onValueChange={onValueChange}
       onFileValidate={onFileValidate}
       onFileReject={onFileReject}
       accept="image/*"
       maxFiles={1}
-      className="w-full max-w-md"
-      multiple
+      className={cn("w-full max-w-md", className)}
+      disabled={disabled}
     >
       <FileUploadDropzone>
         <div className="flex flex-col items-center gap-1">
           <div className="flex items-center justify-center rounded-full border p-2.5">
-            <HugeiconsIcon icon={Upload}
-             className="size-6 text-muted-foreground" />
+            <HugeiconsIcon
+              icon={Upload}
+              className="size-6 text-muted-foreground"
+            />
           </div>
-          <p className="font-medium text-sm">Drag & drop files here</p>
-          <p className="text-muted-foreground text-xs">
-            Or click to browse (max 1 files)
+          <p className="text-sm font-medium">Drop one image here</p>
+          <p className="text-xs text-muted-foreground">
+            Or click to browse (max 1 image, 2MB)
           </p>
         </div>
         <FileUploadTrigger asChild>
@@ -78,18 +78,21 @@ export function FileUploadBox() {
         </FileUploadTrigger>
       </FileUploadDropzone>
       <FileUploadList>
-        {files.map((file) => (
-          <FileUploadItem key={file.name} value={file}>
+        {value.map((file) => (
+          <FileUploadItem
+            key={`${file.name}-${file.lastModified}`}
+            value={file}
+          >
             <FileUploadItemPreview />
             <FileUploadItemMetadata />
             <FileUploadItemDelete asChild>
               <Button variant="ghost" size="icon" className="size-7">
-                <HugeiconsIcon icon={X}/>
+                <HugeiconsIcon icon={X} />
               </Button>
             </FileUploadItemDelete>
           </FileUploadItem>
         ))}
       </FileUploadList>
     </FileUpload>
-  );
+  )
 }

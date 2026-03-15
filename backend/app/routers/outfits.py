@@ -62,6 +62,7 @@ async def generate_outfit(request: GenerateOutfitRequest, user: CurrentUser):
                     "outer_tops": outfit.outer_tops,
                     "bottoms": outfit.bottoms,
                     "shoes": outfit.shoes,
+                    "title": outfit.title,
                     "reasoning": outfit.reasoning,
                 }
             )
