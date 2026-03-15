@@ -1,6 +1,6 @@
-# importing basemodel which has a bunch of cool stuff  
+from enum import Enum
+
 from pydantic import BaseModel
-from enum import Enum 
 
 class ClothingCategory(str, Enum):
     INNER_TOP = "INNER_TOP"
@@ -8,15 +8,31 @@ class ClothingCategory(str, Enum):
     BOTTOM = "BOTTOM"
     SHOES = "SHOES"
 
+
 class ClothingFormality(str, Enum):
     CASUAL = "CASUAL"
     BUSINESS_CASUAL = "BUSINESS_CASUAL"
     FORMAL = "FORMAL"
     ATHLETIC = "ATHLETIC"
 
+
+class ClothingColor(str, Enum):
+    RED = "RED"
+    ORANGE = "ORANGE"
+    YELLOW = "YELLOW"
+    GREEN = "GREEN"
+    BLUE = "BLUE"
+    PURPLE = "PURPLE"
+    BLACK = "BLACK"
+    WHITE = "WHITE"
+    BROWN = "BROWN"
+    GREY = "GREY"
+    PINK = "PINK"
+    MULTI = "MULTI"
+
 class ClothingItem(BaseModel):
     name: str
-    description: str
+    description: str | None = None
     category: ClothingCategory
     formality: ClothingFormality
-    primary_color: str
+    color: ClothingColor
