@@ -1,9 +1,9 @@
 from pydantic_ai import Agent
 from app.schemas.clothing import ClothingItem
-from app.models.gemini import gemini_2_0_flash_exp_free
+from app.models.gemini import gemini_2_5_flash
 
 agent = Agent(
-    model=gemini_2_0_flash_exp_free,
+    model=gemini_2_5_flash,
     output_type=ClothingItem,
     system_prompt="""
     You are a fashion analyst. Look at the clothing item in the image and extract:
