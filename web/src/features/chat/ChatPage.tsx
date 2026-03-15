@@ -1,6 +1,4 @@
 import { FileUploadBox } from "@/components/file-drop-box";
-import Placeholder from 'C:/Users/herna/Desktop/celibacy.gif'
-import Placeholder2 from 'C:/Users/herna/Desktop/autism emotional disregulation.gif'
 
 import {
   Dialog,
@@ -23,12 +21,12 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <Navbar />
-      <h1>What's your idea?</h1>
+      <h1 className="text-6xl font-bold mb-6 ml-5 mt-15">What's your idea?</h1>
       <FileUploadBox />
       <p>or</p>
       <input type="text"
         placeholder="Describe your outfit idea"
-        className="input input-bordered w-full max-w-md" />
+        className="input input-bordered w-full max-w-md border-solid border-1" />
 
       <Dialog>
         <DialogTrigger className="px-4 py-2 rounded-xl border-3 border-solid
@@ -44,9 +42,9 @@ export default function ChatPage() {
                 loop: true,
               }}>
                 <CarouselContent>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="overcoat1" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="overcoat2" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="overcoat3" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="overcoat1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="overcoat2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="overcoat3" /></CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
@@ -56,9 +54,9 @@ export default function ChatPage() {
                 loop: true,
               }}>
                 <CarouselContent>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="top1" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="top2" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="top3" /> </CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="top1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="top2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="top3" /> </CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
@@ -68,9 +66,9 @@ export default function ChatPage() {
                 loop: true,
               }}>
                 <CarouselContent>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="bottom1" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="bottom2" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="bottom3" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="bottom1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="bottom2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="bottom3" /></CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
@@ -80,9 +78,9 @@ export default function ChatPage() {
                 loop: true,
               }}>
                 <CarouselContent>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="shoes1" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="shoes2" /></CarouselItem>
-                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="shoes3" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="shoes1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="shoes2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={"https://avatar.vercel.sh/shadcn1"} alt="shoes3" /></CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />

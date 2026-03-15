@@ -78,7 +78,7 @@ export function FilterDropdown({ filters, onFiltersChange, items, deleteItem }: 
 
   return (
     <div>
-      <div className="flex justify-end mr-9.5">
+      <div className="flex justify-start ml-9.5">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline">Filter</Button>
