@@ -9,3 +9,8 @@ supabase
 pydantic-ai
 
 replicate
+
+rembg[cpu]
+rembg[gpu]
+
+httpx
