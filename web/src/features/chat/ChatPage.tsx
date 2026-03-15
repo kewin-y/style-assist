@@ -21,12 +21,12 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       <Navbar />
-      <h1>What's your idea?</h1>
+      <h1 className="text-6xl font-bold mb-6 ml-5 mt-15">What's your idea?</h1>
       <FileUploadBox />
       <p>or</p>
       <input type="text"
         placeholder="Describe your outfit idea"
-        className="input input-bordered w-full max-w-md" />
+        className="input input-bordered w-full max-w-md border-solid border-1" />
 
       <Dialog>
         <DialogTrigger className="px-4 py-2 rounded-xl border-3 border-solid
