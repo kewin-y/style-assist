@@ -1,4 +1,7 @@
 import { FileUploadBox } from "@/components/file-drop-box";
+import Placeholder from 'C:/Users/herna/Desktop/celibacy.gif'
+import Placeholder2 from 'C:/Users/herna/Desktop/autism emotional disregulation.gif'
+
 import {
   Dialog,
   DialogContent,
@@ -35,21 +38,51 @@ export default function ChatPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Outfit options</DialogTitle>
-            <DialogDescription>
-              <Carousel>
+            <DialogDescription className="flex flex-col items-center gap-4 p-4">
+              <p>Outfit ideas!</p>
+              <Carousel className="w-40" opts={{
+                loop: true,
+              }}>
                 <CarouselContent>
-                  <CarouselItem>top1</CarouselItem>
-                  <CarouselItem>top2</CarouselItem>
-                  <CarouselItem>top3</CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="overcoat1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="overcoat2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="overcoat3" /></CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
               </Carousel>
-              <Carousel>
+
+              <Carousel className="w-40" opts={{
+                loop: true,
+              }}>
                 <CarouselContent>
-                  <CarouselItem>bottom1</CarouselItem>
-                  <CarouselItem>bottom2</CarouselItem>
-                  <CarouselItem>bottom3</CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="top1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="top2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="top3" /> </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+
+              <Carousel className="w-40" opts={{
+                loop: true,
+              }}>
+                <CarouselContent>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="bottom1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="bottom2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="bottom3" /></CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+
+              <Carousel className="w-40" opts={{
+                loop: true,
+              }}>
+                <CarouselContent>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="shoes1" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder2} alt="shoes2" /></CarouselItem>
+                  <CarouselItem><img className="h-30 w-40 object-scale-down" src={Placeholder} alt="shoes3" /></CarouselItem>
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />
