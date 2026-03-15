@@ -1,8 +1,4 @@
-export type ClothingCategory =
-  | "INNER_TOP"
-  | "OUTER_TOP"
-  | "BOTTOM"
-  | "SHOES"
+export type ClothingCategory = "INNER_TOP" | "OUTER_TOP" | "BOTTOM" | "SHOES"
 
 export type ClothingColor =
   | "RED"
@@ -25,7 +21,7 @@ export type ClothingFormality =
   | "ATHLETIC"
 
 export interface ClothingItem {
-  id: number
+  id: string
   name: string
   description: string | null
   category: ClothingCategory

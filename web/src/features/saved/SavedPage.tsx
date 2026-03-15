@@ -1,12 +1,69 @@
+import * as React from "react"
+import { useQueries } from "@tanstack/react-query"
+
 import { Navbar } from "@/components/navbar"
+import { OutfitDialog } from "@/components/outfit-dialog"
 import { OutfitCardImage } from "@/components/outfit_card"
 import { useOutfits } from "@/hooks/useOutfits"
+import { api } from "@/lib/api"
+import type { ClothingItem } from "@/types/clothing"
+import type { SavedOutfit } from "@/types/outfit"
 
 export default function SavedPage() {
   const { data: items = [], isLoading, error } = useOutfits()
+  const [selectedOutfit, setSelectedOutfit] =
+    React.useState<SavedOutfit | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
-  const deleteItem = (id: number) => {
+  const deleteItem = (id: string) => {
     console.log("Delete outfit:", id)
+  }
+
+  const selectedClothingIds = React.useMemo(() => {
+    if (!selectedOutfit) {
+      return []
+    }
+
+    return Array.from(
+      new Set([
+        ...selectedOutfit.outer_tops,
+        ...selectedOutfit.inner_tops,
+        ...selectedOutfit.bottoms,
+        ...selectedOutfit.shoes,
+      ])
+    )
+  }, [selectedOutfit])
+
+  const clothingQueries = useQueries({
+    queries: selectedClothingIds.map((clothingId) => ({
+      queryKey: ["clothes", clothingId],
+      queryFn: async () => {
+        const { data } = await api.get<ClothingItem>(`/clothes/${clothingId}`)
+        return data
+      },
+      enabled: isDialogOpen,
+    })),
+  })
+
+  const selectedItems = React.useMemo(
+    () =>
+      clothingQueries
+        .map((query) => query.data)
+        .filter((item): item is ClothingItem => item !== undefined),
+    [clothingQueries]
+  )
+
+  const handleCardClick = (outfit: SavedOutfit) => {
+    setSelectedOutfit(outfit)
+    setIsDialogOpen(true)
+  }
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open)
+
+    if (!open) {
+      setSelectedOutfit(null)
+    }
   }
 
   if (isLoading) {
@@ -43,9 +100,17 @@ export default function SavedPage() {
             key={outfit.id}
             item={outfit}
             deleteItem={deleteItem}
+            onClick={handleCardClick}
           />
         ))}
       </div>
+
+      <OutfitDialog
+        open={isDialogOpen}
+        onOpenChange={handleDialogOpenChange}
+        outfit={selectedOutfit}
+        items={selectedItems}
+      />
     </div>
   )
 }

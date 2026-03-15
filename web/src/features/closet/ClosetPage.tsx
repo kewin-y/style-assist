@@ -20,7 +20,7 @@ export default function ClosetPage() {
   const fileInputRef = React.useRef<HTMLInputElement | null>(null)
   const { data: items = [], isLoading, error, refetch } = useClothes(filters)
 
-  const deleteItem = (id: number) => {
+  const deleteItem = (id: string) => {
     console.log("Delete item:", id)
   }
 

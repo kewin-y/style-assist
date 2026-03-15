@@ -25,7 +25,7 @@ type FilterDropdownProps = {
   filters: ClothingFilters
   onFiltersChange: (filters: ClothingFilters) => void
   items: {
-    id: number
+    id: string
     name: string
     category: ClothingCategory
     color: ClothingColor
@@ -33,7 +33,7 @@ type FilterDropdownProps = {
     image_url: string
     description: string | null
   }[]
-  deleteItem: (id: number) => void
+  deleteItem: (id: string) => void
 }
 
 export function FilterDropdown({

@@ -3,27 +3,13 @@ import { useMutation } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 import { toast } from "sonner"
 
+import { OutfitDialog } from "@/components/outfit-dialog"
 import { FileUploadBox } from "@/components/file-drop-box"
 import { Navbar } from "@/components/navbar"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { api } from "@/lib/api"
 import { uploadInspoImage } from "@/lib/supabase-storage"
 import { useAuth } from "@/contexts/AuthContext"
-import { useClothes } from "@/hooks/useClothes"
-import type { ClothingFilters, ClothingItem } from "@/types/clothing"
+import type { ClothingItem } from "@/types/clothing"
 import type {
   GeneratedOutfit,
   OutfitGenerationErrorResponse,
@@ -33,25 +19,6 @@ type GenerateOutfitPayload = {
   prompt?: string
   image_url?: string
 }
-
-type OutfitSection = {
-  key: "outer_tops" | "inner_tops" | "bottoms" | "shoes"
-  title: string
-  items: string[]
-}
-
-const EMPTY_FILTERS: ClothingFilters = {
-  categories: [],
-  colors: [],
-  formalities: [],
-}
-
-const OUTFIT_SECTIONS: Array<Pick<OutfitSection, "key" | "title">> = [
-  { key: "outer_tops", title: "Outer layers" },
-  { key: "inner_tops", title: "Tops" },
-  { key: "bottoms", title: "Bottoms" },
-  { key: "shoes", title: "Shoes" },
-]
 
 function isGenerationError(
   value: GeneratedOutfit | OutfitGenerationErrorResponse
@@ -69,90 +36,13 @@ function normalizeOutfitResponse(
   return data
 }
 
-function buildItemLookup(items: ClothingItem[]) {
-  return items.reduce<Map<string, ClothingItem>>((lookup, item) => {
-    lookup.set(item.name.trim().toLowerCase(), item)
-    return lookup
-  }, new Map())
-}
-
-function OutfitCarousel({
-  title,
-  itemNames,
-  itemLookup,
-}: {
-  title: string
-  itemNames: string[]
-  itemLookup: Map<string, ClothingItem>
-}) {
-  if (itemNames.length === 0) {
-    return null
-  }
-
-  return (
-    <div className="flex w-full flex-col gap-3">
-      <h3 className="text-left text-lg font-semibold">{title}</h3>
-      <Carousel
-        className="w-full"
-        opts={{
-          loop: itemNames.length > 1,
-          align: "start",
-        }}
-      >
-        <CarouselContent>
-          {itemNames.map((name) => {
-            const clothingItem = itemLookup.get(name.trim().toLowerCase())
-
-            return (
-              <CarouselItem
-                key={`${title}-${name}`}
-                className="sm:basis-1/2 lg:basis-1/3"
-              >
-                <div className="flex h-full flex-col overflow-hidden rounded-3xl border bg-card shadow-sm">
-                  {clothingItem?.image_url ? (
-                    <img
-                      src={clothingItem.image_url}
-                      alt={name}
-                      className="h-56 w-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-56 items-center justify-center bg-muted px-6 text-center text-sm text-muted-foreground">
-                      No closet image found for this piece.
-                    </div>
-                  )}
-                  <div className="flex flex-1 flex-col gap-2 p-4 text-left">
-                    <p className="font-medium">{name}</p>
-                    {clothingItem?.description ? (
-                      <p className="text-sm text-muted-foreground">
-                        {clothingItem.description}
-                      </p>
-                    ) : null}
-                  </div>
-                </div>
-              </CarouselItem>
-            )
-          })}
-        </CarouselContent>
-        {itemNames.length > 1 ? (
-          <>
-            <CarouselPrevious />
-            <CarouselNext />
-          </>
-        ) : null}
-      </Carousel>
-    </div>
-  )
-}
-
 export default function ChatPage() {
   const { user } = useAuth()
   const [prompt, setPrompt] = React.useState("")
   const [files, setFiles] = React.useState<File[]>([])
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
   const [result, setResult] = React.useState<GeneratedOutfit | null>(null)
-  const { data: clothes = [] } = useClothes(EMPTY_FILTERS)
-
-  const itemLookup = React.useMemo(() => buildItemLookup(clothes), [clothes])
+  const [resolvedItems, setResolvedItems] = React.useState<ClothingItem[]>([])
 
   const generateOutfitMutation = useMutation({
     mutationFn: async () => {
@@ -191,10 +81,38 @@ export default function ChatPage() {
         throw new Error(normalizedData.message)
       }
 
-      return normalizedData
+      const clothingIds = Array.from(
+        new Set([
+          ...normalizedData.outer_tops,
+          ...normalizedData.inner_tops,
+          ...normalizedData.bottoms,
+          ...normalizedData.shoes,
+        ])
+      )
+
+      const clothingItems = await Promise.all(
+        clothingIds.map(async (clothingId) => {
+          try {
+            const { data } = await api.get<ClothingItem>(
+              `/clothes/${clothingId}`
+            )
+            return data
+          } catch {
+            return null
+          }
+        })
+      )
+
+      return {
+        outfit: normalizedData,
+        clothingItems: clothingItems.filter(
+          (item): item is ClothingItem => item !== null
+        ),
+      }
     },
-    onSuccess: (outfit) => {
+    onSuccess: ({ outfit, clothingItems }) => {
       setResult(outfit)
+      setResolvedItems(clothingItems)
       setIsDialogOpen(true)
     },
     onError: (error) => {
@@ -208,17 +126,6 @@ export default function ChatPage() {
       toast.error(message)
     },
   })
-
-  const sections = React.useMemo<OutfitSection[]>(() => {
-    if (!result) {
-      return []
-    }
-
-    return OUTFIT_SECTIONS.map((section) => ({
-      ...section,
-      items: result[section.key] ?? [],
-    })).filter((section) => section.items.length > 0)
-  }, [result])
 
   const handleGenerate = async () => {
     await generateOutfitMutation.mutateAsync()
@@ -268,30 +175,12 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>
-              {result?.title?.trim() || "Your stylist picks"}
-            </DialogTitle>
-            <DialogDescription className="text-left leading-relaxed">
-              {result?.reasoning ||
-                "Here are the best matches from your closet."}
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex flex-col gap-8 pt-2">
-            {sections.map((section) => (
-              <OutfitCarousel
-                key={section.key}
-                title={section.title}
-                itemNames={section.items}
-                itemLookup={itemLookup}
-              />
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <OutfitDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        outfit={result}
+        items={resolvedItems}
+      />
     </>
   )
 }

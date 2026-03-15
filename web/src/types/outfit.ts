@@ -1,5 +1,5 @@
 export interface GeneratedOutfit {
-  id?: number
+  id?: string
   title?: string | null
   reasoning: string
   inner_tops: string[]
@@ -9,7 +9,7 @@ export interface GeneratedOutfit {
 }
 
 export interface SavedOutfit extends GeneratedOutfit {
-  id: number
+  id: string
   title: string
 }
 
