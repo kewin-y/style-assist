@@ -1,6 +1,8 @@
 export default function SavedPage() {
   return (
-    <div>Saved outfits!</div>
+    <div>Here are your saved outfits!</div>
   )
 }
+
+
 
