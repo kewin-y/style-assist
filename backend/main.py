@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import clothes
+from app.routers import clothes 
 
 app = FastAPI()
 app.include_router(clothes.router)
@@ -21,8 +21,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/")
-async def root():
-    return "HAHHAhAHAH"
