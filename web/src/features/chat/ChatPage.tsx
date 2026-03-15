@@ -28,7 +28,10 @@ export default function ChatPage() {
         className="input input-bordered w-full max-w-md" />
 
       <Dialog>
-        <DialogTrigger>Go</DialogTrigger>
+        <DialogTrigger className="px-4 py-2 rounded-xl border-3 border-solid
+        hover:bg-gray-100 transition-colors duration-200">
+          Go
+        </DialogTrigger>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Outfit options</DialogTitle>

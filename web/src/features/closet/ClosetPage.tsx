@@ -2,6 +2,7 @@ import { FilterDropdown } from "@/components/filter"
 import * as React from "react"
 import { useClothes } from "@/hooks/useClothes"
 import type { ClothingFilters } from "@/types/clothing"
+import { Navbar } from "@/components/navbar";
 
 const EMPTY_FILTERS: ClothingFilters = {
   categories: [],
@@ -35,6 +36,7 @@ export default function ClosetPage() {
 
   return (
     <div>
+      <Navbar />
       <h1 className="text-6xl font-bold mb-6 ml-5 mt-15">Welcome to your digital closet!</h1>
       <FilterDropdown
         filters={filters}
