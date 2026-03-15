@@ -36,16 +36,23 @@ export default function ClosetPage() {
 
   return (
     <div>
-      <Navbar />
-      <h1 className="text-6xl font-bold mb-6 ml-5 mt-15">Welcome to your digital closet!</h1>
-      <FilterDropdown
-        filters={filters}
-        onFiltersChange={setFilters}
-        items={items}
-        deleteItem={deleteItem}
-      />
-      <div style={{ height: "20px" }} />
+      <div className="flex flex-col items-center gap-4 p-4">
+        <Navbar />
+        <h1 className="text-6xl font-bold mb-6 ml-5 mt-15">Welcome to your digital closet!</h1>
+        <div style={{ height: "20px" }} />
+      </div>
+
+      <div>
+        <FilterDropdown
+          filters={filters}
+          onFiltersChange={setFilters}
+          items={items}
+          deleteItem={deleteItem}
+        />
+      </div>
     </div>
+    
+    
   )
 }
 
