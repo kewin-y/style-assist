@@ -14,37 +14,41 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from "@/components/ui/file-upload";
- 
+
+// TODO: Turn image file into supabase URL
+// Insert into HARDCODED_USER_ID/RANDOM_UUID.extension
+// hit the api (localhost:8000/outfits/generate) with that
+// Might also want to refactor this to expose props which ChatPage can access...
 export function FileUploadBox() {
   const [files, setFiles] = React.useState<File[]>([]);
- 
+
   const onFileValidate = React.useCallback(
     (file: File): string | null => {
       // Validate max files
       if (files.length >= 1) {
         return "You can only upload up to 1 files";
       }
- 
+
       // Validate file type (only images)
       if (!file.type.startsWith("image/")) {
         return "Only image files are allowed";
       }
- 
+
       // Validate file size (max 2MB)
       const MAX_SIZE = 2 * 1024 * 1024; // 2MB
       if (file.size > MAX_SIZE) {
         return `File size must be less than ${MAX_SIZE / (1024 * 1024)}MB`;
       }
- 
+
       return null;
     },
     [files],
   );
- 
+
   const onFileReject = React.useCallback((file: File, message: string) => {
 
   }, []);
- 
+
   return (
     <FileUpload
       value={files}

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react"
 
-const HARDCODED_UUID = "your-supabase-uuid-here"
+const HARDCODED_UUID = import.meta.env.VITE_DUMMY_USER_ID
 
 interface AuthContextType {
   user: { id: string } | null
